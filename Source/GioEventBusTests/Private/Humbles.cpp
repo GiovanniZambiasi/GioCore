@@ -1,4 +1,6 @@
-﻿#include "Humbles.h"
+﻿// Copyright MiddleMast. All rights reserved
+
+#include "Humbles.h"
 
 void FHumbleRawListener::HandleHumbleEvent(FHumbleEvent Event)
 {

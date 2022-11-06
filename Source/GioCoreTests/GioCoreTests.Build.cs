@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class GioEventBusTests : ModuleRules
+public class GioCoreTests : ModuleRules
 {
-	public GioEventBusTests(ReadOnlyTargetRules Target) : base(Target)
+	public GioCoreTests(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -20,8 +20,6 @@ public class GioEventBusTests : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"GioEventBus", 
-				"GioCoreTests"
 			}
 		);
 		

@@ -1,1 +1,3 @@
-﻿#include "GioEventBus.h"
+﻿// Copyright MiddleMast. All rights reserved
+
+#include "GioEventBus.h"

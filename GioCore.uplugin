@@ -24,6 +24,11 @@
       "Name": "GioEventBusTests",
       "Type": "Runtime",
       "LoadingPhase": "Default"
+    },
+    {
+      "Name": "GioCoreTests",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
     }
   ]
 }

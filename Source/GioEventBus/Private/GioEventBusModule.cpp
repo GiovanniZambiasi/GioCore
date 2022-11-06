@@ -3,3 +3,4 @@
 #include "GioEventBusModule.h"
 
 IMPLEMENT_MODULE(FDefaultModuleImpl, GioEventBus)
+
