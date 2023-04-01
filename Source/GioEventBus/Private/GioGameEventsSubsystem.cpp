@@ -5,6 +5,5 @@
 void UGioGameEventsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
-	EventBus = FGioEventBus{};
+	EventBus = MakeShared<FGioEventBus>();
 }

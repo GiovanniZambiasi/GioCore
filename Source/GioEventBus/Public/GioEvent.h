@@ -15,7 +15,7 @@
  * TGioEventDelegate<FSomeEvent>::CreateRaw(&MyObject, &MyClass::HandleEvent)
  */
 template <typename TEvent>
-class TGioEventDelegate : public TDelegate<void(TEvent)> {};
+class TGioEventDelegate : public TDelegate<void(const TEvent&)> {};
 
 /**
  * @brief A base event structure to inherit from. Technically any USTRUCT will work as an event, but it's useful to have

@@ -10,10 +10,10 @@ class GIOEVENTBUS_API UGioGameEventsSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-	FGioEventBus EventBus;
+	TSharedPtr<FGioEventBus> EventBus;
 	
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
-	FGioEventBus& GetEventBus() { return EventBus; }
+	TSharedPtr<FGioEventBus> GetEventBus() { return EventBus; }
 };

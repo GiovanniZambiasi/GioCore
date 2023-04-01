@@ -2,12 +2,12 @@
 
 #include "Humbles.h"
 
-void FHumbleRawListener::HandleHumbleEvent(FHumbleEvent Event)
+void FHumbleRawListener::HandleHumbleEvent(const FHumbleEvent& Event)
 {
 	bHasReceivedEvent = true;
 }
 
-void UHumbleUObjectListener::HandleHumbleEvent(FHumbleEvent Event)
+void UHumbleUObjectListener::HandleHumbleEvent(const FHumbleEvent& Event)
 {
 	bHasReceivedEvent = true;
 }

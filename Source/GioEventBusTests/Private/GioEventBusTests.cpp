@@ -115,4 +115,20 @@ void FGioEventBusTests::Define()
 
 		TestTrue(TEXT("A doesn't receive broadcast, but B does"), !ListenerA.GetHasReceivedEvent() && ListenerB.GetHasReceivedEvent());
 	});
+
+	It(TEXT("GivenEventWithParameters_WhenListened_DoesntSliceObject"), [&]
+	{
+		FHumbleEventWithParameters ReceivedEvent{};
+		ReceivedEvent.Param = -1;
+		
+		Bus.RegisterListener<FHumbleEventWithParameters>(
+		TGioEventDelegate<FHumbleEventWithParameters>::CreateLambda([&](const FHumbleEventWithParameters& Event)
+		{
+			ReceivedEvent = Event;
+		}));
+
+	Bus.Dispatch(FHumbleEventWithParameters{16});
+
+	TestTrue(TEXT("Event not sliced"), ReceivedEvent.Param == 16);
+	});
 }

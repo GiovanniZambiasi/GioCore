@@ -19,7 +19,7 @@ class FHumbleRawListener
 public:
 	bool GetHasReceivedEvent() const { return bHasReceivedEvent; }
 	
-	void HandleHumbleEvent(FHumbleEvent Event);
+	void HandleHumbleEvent(const FHumbleEvent& Event);
 };
 
 UCLASS()
@@ -30,5 +30,19 @@ class UHumbleUObjectListener : public UObject
 	bool bHasReceivedEvent{false};
 	
 public:
-	void HandleHumbleEvent(FHumbleEvent Event);
+	void HandleHumbleEvent(const FHumbleEvent& Event);
+};
+
+USTRUCT()
+struct FHumbleEventWithParameters : public FGioEvent
+{
+	GENERATED_BODY()
+
+	FHumbleEventWithParameters() = default;
+
+	FHumbleEventWithParameters(int32 InParam)
+	: Param(InParam)
+	{ }
+	
+	int32 Param{0};
 };

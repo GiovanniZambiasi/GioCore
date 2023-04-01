@@ -30,15 +30,15 @@ void FGameEventSubsystemTests::Define()
 
 	It(TEXT("GivenGameEventSubsystem_WhenEventBroadcast_ListenersReceive"), [&]
 	{
-		auto& Bus = GameEventsSubsystem->GetEventBus();
+		auto Bus = GameEventsSubsystem->GetEventBus();
 		bool bEventListened = false;
 		
-		Bus.RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](FGioEvent)
+		Bus->RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](const FGioEvent&)
 		{
 			bEventListened = true;
 		}));
 
-		Bus.Dispatch(FGioEvent{});
+		Bus->Dispatch(FGioEvent{});
 
 		TestTrue(TEXT("Event listened"), bEventListened);
 	});
