@@ -2,7 +2,9 @@
 
 Documentation TBD..
 
-## To-Dos
+[↩️ Back to main page](README.md)
+
+## To-dos
 - [ ] Templated delegates
 - [ ] Loops & ping-pongs
 - [ ] ``AnimationCurve`` based easing

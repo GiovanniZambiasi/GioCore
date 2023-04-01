@@ -7,6 +7,5 @@ Unreal Engine plugin featuring a number of utilities!
 1. [EventBus](EventBus.md)
 2. [Tweening](Tweening.md)
 
-## To do
-- [ ] TScriptInterface which handles blueprint inheritors well 
-~~~~
+## To-dos
+- [ ] TScriptInterface which handles blueprint inheritors well
