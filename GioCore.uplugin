@@ -1,34 +1,44 @@
 ﻿{
-  "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.0",
-  "FriendlyName": "GioCore",
-  "Description": "",
-  "Category": "Other",
-  "CreatedBy": "Giovanni Zambiasi",
-  "CreatedByURL": "https://github.com/GiovanniZambiasi",
-  "DocsURL": "",
-  "MarketplaceURL": "",
-  "SupportURL": "",
-  "CanContainContent": true,
-  "IsBetaVersion": false,
-  "IsExperimentalVersion": false,
-  "Installed": false,
-  "Modules": [
-    {
-      "Name": "GioEventBus",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    },
-    {
-      "Name": "GioEventBusTests",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    },
-    {
-      "Name": "GioCoreTests",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    }
-  ]
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "GioCore",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "Giovanni Zambiasi",
+	"CreatedByURL": "https://github.com/GiovanniZambiasi",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "GioEventBus",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "GioEventBusTests",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "GioCoreTests",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "GioTweening",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "GioTweeningTests",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
 }

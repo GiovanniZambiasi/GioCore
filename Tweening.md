@@ -6,4 +6,4 @@ Documentation TBD..
 - [ ] Templated delegates
 - [ ] Loops & ping-pongs
 - [ ] ``AnimationCurve`` based easing
-- [ ] 
+- [ ] Blueprint function library (to avoid exposing tweening subsystem)
