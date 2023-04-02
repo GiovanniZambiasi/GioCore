@@ -8,10 +8,8 @@
 
 class FGioTween;
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FGioTweeningDynamicDelegate, float, Alpha);
-
-UCLASS(BlueprintType)
-class GIOTWEENING_API UGioTweeningSubsystem : public UTickableWorldSubsystem, public IGioTweeningService
+UCLASS()
+class UGioTweeningSubsystem : public UTickableWorldSubsystem, public IGioTweeningService
 {
 	GENERATED_BODY()
 
@@ -25,13 +23,10 @@ public:
 		RETURN_QUICK_DECLARE_CYCLE_STAT(UGioTweeningSubsystem, STATGROUP_Tickables);
 	}
 
-	virtual void SetTween(float From, float To, float Duration, FGioTweeningDelegate Callback,
-	                      EEasingFunc::Type Easing = EEasingFunc::Type::Linear) override;
+	virtual void SetTween(float From, float To, float Duration, FGioTweeningDelegate&& Callback,
+	                      EEasingFunc::Type Easing = EEasingFunc::Type::Linear, int32 Iterations = 1,
+	                      EGioTweeningLoopBehaviors LoopBehavior = EGioTweeningLoopBehaviors::Repeat) override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetTweenByEvent(float From, float To, float Duration, FGioTweeningDynamicDelegate Callback,
-		EEasingFunc::Type Easing = EEasingFunc::Type::Linear);
-	
 private:
 	void TickActiveTweens(float DeltaTime);
 

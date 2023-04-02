@@ -12,16 +12,10 @@ void UGioTweeningSubsystem::Tick(float DeltaTime)
 	RemoveCompletedTweens();
 }
 
-void UGioTweeningSubsystem::SetTween(float From, float To, float Duration, FGioTweeningDelegate Callback,
-                                     EEasingFunc::Type Easing)
+void UGioTweeningSubsystem::SetTween(float From, float To, float Duration, FGioTweeningDelegate&& Callback,
+                                     EEasingFunc::Type Easing, int32 Iterations, EGioTweeningLoopBehaviors LoopBehavior)
 {
-	ActiveTweens.Emplace(From, To, Duration, Callback, Easing);
-}
-
-void UGioTweeningSubsystem::SetTweenByEvent(float From, float To, float Duration, FGioTweeningDynamicDelegate Callback,
-	EEasingFunc::Type Easing)
-{
-	ActiveTweens.Emplace(From, To, Duration, Callback, Easing);
+	ActiveTweens.Emplace(From, To, Duration, MoveTemp(Callback), Easing, Iterations, LoopBehavior);
 }
 
 void UGioTweeningSubsystem::TickActiveTweens(float DeltaTime)

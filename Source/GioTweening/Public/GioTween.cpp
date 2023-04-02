@@ -1,34 +1,53 @@
 ﻿#include "GioTween.h"
 
-FGioTween::FGioTween(float InFrom, float InTo, float InDuration, FGioTweeningUnifiedDelegate InCallback,
-                     EEasingFunc::Type InEasing)
-	: From(InFrom), To(InTo), Duration(InDuration), Callback(InCallback), Easing(InEasing)
+FGioTween::FGioTween(float InFrom, float InTo, float InDuration, FGioTweeningDelegate&& InCallback,
+                     EEasingFunc::Type InEasing, int32 InIterations, EGioTweeningLoopBehaviors InLoopBehavior)
+	: From(InFrom)
+	  , To(InTo)
+	  , Duration(InDuration)
+	  , Callback(MoveTemp(InCallback))
+	  , Easing(InEasing)
+	  , Iterations(InIterations)
+	  , LoopBehaviour(InLoopBehavior)
 {
 }
 
 void FGioTween::Tick(float DeltaTime)
 {
-	if(bComplete)
+	if (bComplete)
 	{
 		return;
 	}
-	
+
 	Time += DeltaTime;
 
-	if(Time >= Duration)
+	if (Time >= Duration)
+	{
+		HandleLoopComplete();
+	}
+
+	float Alpha = Time/Duration;
+	Alpha = UKismetMathLibrary::Ease(From, To, bForward ? Alpha : 1 - Alpha, Easing);
+
+	Callback.ExecuteIfBound(Alpha);
+}
+
+void FGioTween::HandleLoopComplete()
+{
+	--Iterations;
+
+	if (Iterations == 0)
 	{
 		bComplete = true;
 		Time = Duration;
 	}
-	
-	float Alpha = UKismetMathLibrary::Ease(From, To, Time/Duration, Easing);
-	
-	if(Callback.Delegate)
+	else
 	{
-		Callback.Delegate.GetValue().ExecuteIfBound(Alpha);
-	}
-	else if(Callback.DynamicDelegate)
-	{
-		Callback.DynamicDelegate.GetValue().ExecuteIfBound(Alpha);
+		Time -= Duration;
+
+		if(LoopBehaviour == EGioTweeningLoopBehaviors::PingPong)
+		{
+			bForward = !bForward;
+		}
 	}
 }
