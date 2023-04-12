@@ -2,59 +2,72 @@
 #include "GioTweeningService.h"
 #include "GioTweeningTests.h"
 
-BEGIN_DEFINE_SPEC(FGioTweeningBenchmarks, TEXT("GioTweeningBenchmarks"), EAutomationTestFlags::ApplicationContextMask
-                  | EAutomationTestFlags::ProductFilter)
-
-	IGioTweeningService* TweeningService{nullptr};
-	UWorld* World{nullptr};
-
-END_DEFINE_SPEC(FGioTweeningBenchmarks)
-
-void FGioTweeningBenchmarks::Define()
+namespace 
 {
-	BeforeEach([this]
-	{
-		World = FGioTestUtils::OpenEmptyMap();
-		TweeningService = IGioTweeningService::Get(World);
-		check(TweeningService)
-		GEngine->Exec(World, TEXT("stat startfile"));
-	});
+	const FString Linear{TEXT("Linear")};
+	const FString EaseInOut{TEXT("EaseInOut")};
+	const FString EaseOut{TEXT("EaseOut")};
 
-	It(TEXT("OneMillion_Identical_3Iterations"), [this]
+	EEasingFunc::Type FromString(const FString& String)
 	{
-		FGioTweenSettings Settings{};
-		Settings.Iterations = 3;
-		Settings.Duration = 2.f;
-
-		for (int i = 0; i < 1000000; ++i)
+		if(String == EaseInOut)
 		{
-			TweeningService->SetTween(0.f, 1.f, Settings, FGioTweeningDelegate::CreateLambda([](float)
-			{
-			}));
+			return EEasingFunc::EaseInOut;
+		}
+		if(String == EaseOut)
+		{
+			return EEasingFunc::EaseOut;
 		}
 
-		ADD_LATENT_AUTOMATION_COMMAND(FWaitForTweensToFinish{TweeningService});
-	});
+		return EEasingFunc::Linear;
+	}
+}
 
-	It(TEXT("OneMillion_VaryingEasing_3Iterations"), [this]
-	{
-		FGioTweenSettings Settings{};
-		Settings.Iterations = 3;
-		Settings.Duration = 2.f;
-		Settings.Easing = EEasingFunc::EaseInOut;
+IMPLEMENT_COMPLEX_AUTOMATION_TEST(FGioOneMillionIdenticalTweensBenchmark, TEXT("GioTweeningBenchmarks"), EAutomationTestFlags::ApplicationContextMask
+                                  | EAutomationTestFlags::ProductFilter)
 
-		for (int i = 0; i < 1000000; ++i)
+void FGioOneMillionIdenticalTweensBenchmark::GetTests(TArray<FString>& OutBeautifiedNames, TArray<FString>& OutTestCommands) const
+{
+	OutBeautifiedNames.Append(
 		{
-			TweeningService->SetTween(0.f, 1.f, Settings, FGioTweeningDelegate::CreateLambda([](float)
-			{
-			}));
-		}
-
-		ADD_LATENT_AUTOMATION_COMMAND(FWaitForTweensToFinish{TweeningService});
+			TEXT("OneMillion_Identical_Linear_3Iterations"),
+			TEXT("OneMillion_Identical_EaseInOut_3Iterations"),
+			TEXT("OneMillion_Identical_EaseOut_3Iterations"),
 	});
 
-	AfterEach([this]
+	OutTestCommands.Append(
 	{
-		ADD_LATENT_AUTOMATION_COMMAND(FUnloadMapAndFinishProfiling{World});
+		Linear,
+		EaseInOut,
+		EaseOut,
 	});
 }
+
+bool FGioOneMillionIdenticalTweensBenchmark::RunTest(const FString& Parameters)
+{
+	auto World = FGioTestUtils::OpenEmptyMap();
+	auto TweeningService = IGioTweeningService::Get(World);
+	check(TweeningService)
+	
+	FString FileName{FString::Printf(TEXT("GioTweens/OneMillionIdentical_%s_%s"), *Parameters, *FDateTime::Now().ToString(TEXT("%Y-%m-%d_%H-%M-%S")))};
+	GEngine->Exec(World, *FString::Printf(TEXT("stat startfile %s"), *FileName));
+
+	FGioTweenSettings Settings{};
+	Settings.Iterations = 3;
+	Settings.Duration = 2.f;
+	Settings.Easing = FromString(Parameters);
+
+	for (int i = 0; i < 1000000; ++i)
+	{
+		TweeningService->SetTween(0.f, 1.f, Settings, FGioTweeningDelegate::CreateLambda([](float)
+		{
+		}));
+	}
+
+	ADD_LATENT_AUTOMATION_COMMAND(FWaitForTweensToFinish{TweeningService});
+	ADD_LATENT_AUTOMATION_COMMAND(FUnloadMapAndFinishProfiling{World});
+
+	return true;
+}
+
+
