@@ -6,20 +6,33 @@
 
 AGioTweeningBenchmark::AGioTweeningBenchmark()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	TimeLimit = 0.f;
 }
 
-void AGioTweeningBenchmark::BeginPlay()
+void AGioTweeningBenchmark::StartTest()
 {
-	Super::BeginPlay();
+	Super::StartTest();
 
 	auto* TweeningService = IGioTweeningService::Get(this);
 
 	for (int i = 0; i < Instances; ++i)
 	{
-		TweeningService->SetTween(0.f, 1.f, Duration, FGioTweeningDelegate::CreateLambda([](float Alpha)
+		TweeningService->SetTween(0.f, 1.f, Settings, FGioTweeningDelegate::CreateLambda([](float Alpha)
 			{
+			}));		
+	}
+}
+
+void AGioTweeningBenchmark::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	auto* TweeningService = IGioTweeningService::Get(this);
+	GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Green, FString::Printf(TEXT("Active tweens %i"), TweeningService->GetActiveTweenCount()));
+
+	if(TweeningService->GetActiveTweenCount() == 0)
+	{
 		
-			}), Easing, Iterations, LoopBehaviour);		
+		FinishTest(EFunctionalTestResult::Succeeded, TEXT("Finished "));
 	}
 }

@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FunctionalTest.h"
 #include "GameFramework/Actor.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "GioTweeningService.h"
 #include "GioTweeningBenchmark.generated.h"
 
 UCLASS()
-class GIOTWEENINGTESTS_API AGioTweeningBenchmark : public AActor
+class GIOTWEENINGTESTS_API AGioTweeningBenchmark : public AFunctionalTest
 {
 	GENERATED_BODY()
 
@@ -17,20 +17,13 @@ class GIOTWEENINGTESTS_API AGioTweeningBenchmark : public AActor
 	int32 Instances{10000};
 	
 	UPROPERTY(EditAnywhere)
-	int32 Iterations{10};
+	FGioTweenSettings Settings;
 
-	UPROPERTY(EditAnywhere)
-	float Duration{1.f};
-
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EEasingFunc::Type> Easing{};
-
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EGioTweeningLoopBehaviors> LoopBehaviour{};
-	
 public:
 	AGioTweeningBenchmark();
 
 protected:
-	virtual void BeginPlay() override;
+	virtual void StartTest() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 };

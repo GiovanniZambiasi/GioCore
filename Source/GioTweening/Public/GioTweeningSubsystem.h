@@ -23,10 +23,11 @@ public:
 		RETURN_QUICK_DECLARE_CYCLE_STAT(UGioTweeningSubsystem, STATGROUP_Tickables);
 	}
 
-	virtual void SetTween(float From, float To, float Duration, FGioTweeningDelegate&& Callback,
-	                      EEasingFunc::Type Easing = EEasingFunc::Type::Linear, int32 Iterations = 1,
-	                      EGioTweeningLoopBehaviors LoopBehavior = EGioTweeningLoopBehaviors::Repeat) override;
+	virtual void SetTween(float From, float To, const FGioTweenSettings& Settings,
+		FGioTweeningDelegate&& Callback) override;
 
+	virtual int32 GetActiveTweenCount() const override { return ActiveTweens.Num(); }
+	
 private:
 	void TickActiveTweens(float DeltaTime);
 

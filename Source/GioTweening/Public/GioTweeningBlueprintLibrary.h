@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FGioTweeningDynamicDelegate, float, Alpha);
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FGioTweeningVectorDelegate, FVector, Alpha);
+
 UCLASS()
 class GIOTWEENING_API UGioTweeningBlueprintLibrary : public UBlueprintFunctionLibrary
 {
@@ -16,7 +18,13 @@ class GIOTWEENING_API UGioTweeningBlueprintLibrary : public UBlueprintFunctionLi
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
-	static void SetFloatTweenByEvent(float From, float To, float Duration, FGioTweeningDynamicDelegate Callback,
-		EEasingFunc::Type Easing = EEasingFunc::Type::Linear, int32 Iterations = 1,
-		EGioTweeningLoopBehaviors LoopBehaviour = EGioTweeningLoopBehaviors::Repeat);
+	static void SetFloatTweenByEvent(float From, float To, FGioTweenSettings Settings,
+		FGioTweeningDynamicDelegate Callback);
+
+	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
+	static void SetVectorTweenByEvent(FVector From, FVector To, FGioTweenSettings Settings,
+		FGioTweeningVectorDelegate Callback);
+
+	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
+	static void SetActorLocationTween(FVector From, FVector To, FGioTweenSettings Settings);
 };

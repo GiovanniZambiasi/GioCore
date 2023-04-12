@@ -10,7 +10,8 @@ public class GioTweeningTests : ModuleRules
             new string[]
             {
                 "Core",
-                "GioTweening"
+                "GioTweening",
+                "FunctionalTesting"
             }
         );
 
@@ -20,7 +21,8 @@ public class GioTweeningTests : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "GioCoreTests", "GioCoreTests"
             }
         );
     }

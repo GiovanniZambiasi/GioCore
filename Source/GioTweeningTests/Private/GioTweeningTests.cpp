@@ -1,16 +1,18 @@
 ﻿#include "GioTweeningTests.h"
 
-#define LOCTEXT_NAMESPACE "FGioTweeningTestsModule"
+#include "GioCoreTests.h"
+#include "GioTweeningService.h"
 
-void FGioTweeningTestsModule::StartupModule()
+IMPLEMENT_MODULE(FDefaultModuleImpl, GioTweeningTests)
+
+bool FWaitForTweensToFinish::Update()
 {
+	return TweeningService && TweeningService->GetActiveTweenCount() == 0;
 }
 
-void FGioTweeningTestsModule::ShutdownModule()
+bool FUnloadMapAndFinishProfiling::Update()
 {
-    
+	GEngine->Exec(Map, TEXT("stat stopfile"));
+	FGioTestUtils::CloseMap(Map);
+	return true;
 }
-
-#undef LOCTEXT_NAMESPACE
-    
-IMPLEMENT_MODULE(FGioTweeningTestsModule, GioTweeningTests)

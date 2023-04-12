@@ -6,24 +6,49 @@
 #include "GioTweening.h"
 #include "GioTweeningService.h"
 
-void UGioTweeningBlueprintLibrary::SetFloatTweenByEvent(float From, float To, float Duration,
-                                                        FGioTweeningDynamicDelegate Callback, EEasingFunc::Type Easing,
-                                                        int32 Iterations, EGioTweeningLoopBehaviors LoopBehaviour)
+void UGioTweeningBlueprintLibrary::SetFloatTweenByEvent(float From, float To, FGioTweenSettings Settings,
+		FGioTweeningDynamicDelegate Callback)
 {
 	const auto* WorldContextObject = Callback.GetUObject();
 	IGioTweeningService* TweeningService = IGioTweeningService::Get(WorldContextObject);
 
 	if (TweeningService)
 	{
-		TweeningService->SetTween(From, To, Duration, FGioTweeningDelegate::CreateWeakLambda(WorldContextObject,
+		TweeningService->SetTween(From, To, Settings, FGioTweeningDelegate::CreateWeakLambda(WorldContextObject,
 			                          [=](float Alpha)
 			                          {
 				                          Callback.ExecuteIfBound(Alpha);
-			                          }), Easing, Iterations, LoopBehaviour);
+			                          }));
 	}
 	else
 	{
 		UE_LOG(LogGioTweening, Error, TEXT("Failed to start tween. Could not retrieve tweening subsystem from '%s'"),
 		       *GetNameSafe(WorldContextObject))
 	}
+}
+
+void UGioTweeningBlueprintLibrary::SetVectorTweenByEvent(FVector From, FVector To, FGioTweenSettings Settings,
+		FGioTweeningVectorDelegate Callback)
+{
+	const auto* WorldContextObject = Callback.GetUObject();
+	IGioTweeningService* TweeningService = IGioTweeningService::Get(WorldContextObject);
+
+	if (TweeningService)
+	{
+		TweeningService->SetTween(0.f, 1.f, Settings, FGioTweeningDelegate::CreateWeakLambda(WorldContextObject,
+			                          [=](float Alpha)
+			                          {
+				                          FVector VectorAlpha = FMath::Lerp(From, To, Alpha);
+				                          Callback.ExecuteIfBound(VectorAlpha);
+			                          }));
+	}
+	else
+	{
+		UE_LOG(LogGioTweening, Error, TEXT("Failed to start tween. Could not retrieve tweening subsystem from '%s'"),
+			   *GetNameSafe(WorldContextObject))
+	}
+}
+
+void UGioTweeningBlueprintLibrary::SetActorLocationTween(FVector From, FVector To, FGioTweenSettings Settings)
+{
 }

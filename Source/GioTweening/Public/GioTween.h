@@ -7,25 +7,20 @@ class FGioTween
 	
 	float To{0.f};
 	
-	float Duration{0.f};
-	
 	float Time{0.f};
 
-	FGioTweeningDelegate Callback{};
-	
-	EEasingFunc::Type Easing{};
+	int32 RemainingIterations{0};
 
-	int32 Iterations{1};
+	FGioTweenSettings Settings{};
 	
-	EGioTweeningLoopBehaviors LoopBehaviour{EGioTweeningLoopBehaviors::Repeat};
+	FGioTweeningDelegate Callback{};
 
 	bool bComplete{false};
 
 	bool bForward{true};
 	
 public:
-	FGioTween(float InFrom, float InTo, float InDuration, FGioTweeningDelegate&& InCallback,
-		EEasingFunc::Type InEasing, int32 InIterations, EGioTweeningLoopBehaviors InLoopBehavior);
+	FGioTween(float InFrom, float InTo, const FGioTweenSettings& InSettings, FGioTweeningDelegate&& InCallback);
 
 	void Tick(float DeltaTime);
 	

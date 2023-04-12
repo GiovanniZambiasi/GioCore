@@ -2,7 +2,6 @@
 
 
 #include "GioTweeningSubsystem.h"
-
 #include "GioTween.h"
 
 void UGioTweeningSubsystem::Tick(float DeltaTime)
@@ -12,10 +11,10 @@ void UGioTweeningSubsystem::Tick(float DeltaTime)
 	RemoveCompletedTweens();
 }
 
-void UGioTweeningSubsystem::SetTween(float From, float To, float Duration, FGioTweeningDelegate&& Callback,
-                                     EEasingFunc::Type Easing, int32 Iterations, EGioTweeningLoopBehaviors LoopBehavior)
+void UGioTweeningSubsystem::SetTween(float From, float To, const FGioTweenSettings& Settings,
+	FGioTweeningDelegate&& Callback)
 {
-	ActiveTweens.Emplace(From, To, Duration, MoveTemp(Callback), Easing, Iterations, LoopBehavior);
+	ActiveTweens.Emplace(From, To, Settings, MoveTemp(Callback));
 }
 
 void UGioTweeningSubsystem::TickActiveTweens(float DeltaTime)

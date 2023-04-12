@@ -1,51 +1,43 @@
 ﻿#include "GioTween.h"
 
-FGioTween::FGioTween(float InFrom, float InTo, float InDuration, FGioTweeningDelegate&& InCallback,
-                     EEasingFunc::Type InEasing, int32 InIterations, EGioTweeningLoopBehaviors InLoopBehavior)
+FGioTween::FGioTween(float InFrom, float InTo, const FGioTweenSettings& InSettings, FGioTweeningDelegate&& InCallback)
 	: From(InFrom)
 	  , To(InTo)
-	  , Duration(InDuration)
+	  , RemainingIterations(InSettings.Iterations)
+	  , Settings(InSettings)
 	  , Callback(MoveTemp(InCallback))
-	  , Easing(InEasing)
-	  , Iterations(InIterations)
-	  , LoopBehaviour(InLoopBehavior)
 {
 }
 
 void FGioTween::Tick(float DeltaTime)
 {
-	if (bComplete)
-	{
-		return;
-	}
-
 	Time += DeltaTime;
 
-	if (Time >= Duration)
+	if (Time >= Settings.Duration)
 	{
 		HandleLoopComplete();
 	}
 
-	float Alpha = Time/Duration;
-	Alpha = UKismetMathLibrary::Ease(From, To, bForward ? Alpha : 1 - Alpha, Easing);
+	float Alpha = Time/Settings.Duration;
+	Alpha = UKismetMathLibrary::Ease(From, To, bForward ? Alpha : 1 - Alpha, Settings.Easing);
 
 	Callback.ExecuteIfBound(Alpha);
 }
 
 void FGioTween::HandleLoopComplete()
 {
-	--Iterations;
+	--RemainingIterations;
 
-	if (Iterations == 0)
+	if (RemainingIterations == 0)
 	{
 		bComplete = true;
-		Time = Duration;
+		Time = Settings.Duration;
 	}
 	else
 	{
-		Time -= Duration;
+		Time -= Settings.Duration;
 
-		if(LoopBehaviour == EGioTweeningLoopBehaviors::PingPong)
+		if(Settings.LoopBehaviour == EGioTweeningLoopBehaviors::PingPong)
 		{
 			bForward = !bForward;
 		}
