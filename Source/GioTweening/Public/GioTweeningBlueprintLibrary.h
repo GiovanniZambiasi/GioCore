@@ -25,6 +25,7 @@ public:
 	static void SetVectorTweenByEvent(FVector From, FVector To, FGioTweenSettings Settings,
 		FGioTweeningVectorDelegate Callback);
 
-	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
-	static void SetActorLocationTween(FVector From, FVector To, FGioTweenSettings Settings);
+	UFUNCTION(BlueprintCallable, Category="Gio Tweening", Meta=(DefaultToSelf="Actor"))
+	static void SetActorLocationTween(AActor* Actor, FVector To, FGioTweenSettings Settings, bool bSweep = false,
+		ETeleportType Teleport = ETeleportType::None);
 };
