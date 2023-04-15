@@ -67,7 +67,15 @@ public:
 
 	virtual uint32 GetActiveTweenCount() const = 0;
 
+	/**
+	 * @brief Checks if the tween handle is valid, and points to a currently active tween instance. This will return
+	 * false after the tween has completed.
+	 */
 	virtual bool IsTweenActive(const FGioTweenHandle& Handle) const = 0;
+	
+	/**
+	 * @brief Stops a tween and clears its handle
+	 */
+	virtual void StopTweenAndClearHandle(FGioTweenHandle& Handle) = 0;
 
-	virtual void StopTween(FGioTweenHandle& Handle) = 0;
 };

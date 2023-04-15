@@ -35,7 +35,7 @@ public:
 
 	virtual uint32 GetActiveTweenCount() const override { return ActiveTweenSerials.Num(); }
 	
-	virtual void StopTween(FGioTweenHandle& Handle) override;
+	virtual void StopTweenAndClearHandle(FGioTweenHandle& Handle) override;
 
 private:
 	FGioTweenHandle RegisterTweenAndGetHandle(uint32 Index);

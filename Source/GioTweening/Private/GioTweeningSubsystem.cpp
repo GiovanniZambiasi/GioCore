@@ -31,7 +31,7 @@ bool UGioTweeningSubsystem::IsTweenActive(const FGioTweenHandle& Handle) const
 	return TweenPool[Handle.Index].GetSerial() == Handle.Serial;
 }
 
-void UGioTweeningSubsystem::StopTween(FGioTweenHandle& Handle)
+void UGioTweeningSubsystem::StopTweenAndClearHandle(FGioTweenHandle& Handle)
 {
 	if(IsTweenActive(Handle))
 	{

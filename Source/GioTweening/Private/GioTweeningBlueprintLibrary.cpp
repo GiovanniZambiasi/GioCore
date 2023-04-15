@@ -90,5 +90,5 @@ bool UGioTweeningBlueprintLibrary::IsTweenActive(AActor* Context, const FGioTwee
 void UGioTweeningBlueprintLibrary::StopTweenAndClearHandle(AActor* Context, FGioTweenHandle& Handle)
 {
 	IGioTweeningService* TweeningService = IGioTweeningService::Get(Context);
-	TweeningService->StopTween(Handle);
+	TweeningService->StopTweenAndClearHandle(Handle);
 }
