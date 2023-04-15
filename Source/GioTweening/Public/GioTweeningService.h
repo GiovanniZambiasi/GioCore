@@ -30,6 +30,31 @@ struct GIOTWEENING_API FGioTweenSettings
 	EGioTweeningLoopBehaviors LoopBehaviour{EGioTweeningLoopBehaviors::Repeat};
 };
 
+USTRUCT(BlueprintType)
+struct GIOTWEENING_API FGioTweenHandle
+{
+	GENERATED_BODY()
+
+	FGioTweenHandle() = default;
+
+	FGioTweenHandle(uint32 InIndex, uint32 InSerial)
+		: Index(InIndex), Serial(InSerial)
+	{
+	}
+	
+	UPROPERTY(Transient)
+	uint32 Index{0};
+
+	UPROPERTY(Transient)
+	uint32 Serial{0};
+
+	/**
+	 * @brief Checks if this handle has ever pointed to a valid tween instance. This <b>does not mean</b> the tween is
+	 * currently active. For that check, use <i>IGioTweeningService's IsTweenActive</i> 
+	 */
+	bool IsValid() const { return Serial != 0; }
+};
+
 class GIOTWEENING_API IGioTweeningService
 {
 public:
@@ -37,7 +62,12 @@ public:
 
 	virtual ~IGioTweeningService() {  }
 	
-	virtual void SetTween(float From, float To, const FGioTweenSettings& Settings, FGioTweeningDelegate&& Callback) = 0;
+	virtual FGioTweenHandle SetTween(float From, float To, const FGioTweenSettings& Settings,
+		FGioTweeningDelegate&& Callback) = 0;
 
-	virtual int32 GetActiveTweenCount() const = 0;
+	virtual uint32 GetActiveTweenCount() const = 0;
+
+	virtual bool IsTweenActive(const FGioTweenHandle& Handle) const = 0;
+
+	virtual void StopTween(FGioTweenHandle& Handle) = 0;
 };

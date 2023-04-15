@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GioTween.h"
 #include "GioTweeningService.h"
 #include "GioTweeningSubsystem.generated.h"
 
@@ -13,7 +14,11 @@ class UGioTweeningSubsystem : public UTickableWorldSubsystem, public IGioTweenin
 {
 	GENERATED_BODY()
 
-	TArray<FGioTween> ActiveTweens{};
+	TArray<FGioTween> TweenPool{};
+
+	TSet<uint32> ActiveTweenSerials{};
+
+	uint32 LastAssignedTweenSerialNumber{0};
 	
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -23,13 +28,23 @@ public:
 		RETURN_QUICK_DECLARE_CYCLE_STAT(UGioTweeningSubsystem, STATGROUP_Tickables);
 	}
 
-	virtual void SetTween(float From, float To, const FGioTweenSettings& Settings,
+	virtual FGioTweenHandle SetTween(float From, float To, const FGioTweenSettings& Settings,
 		FGioTweeningDelegate&& Callback) override;
 
-	virtual int32 GetActiveTweenCount() const override { return ActiveTweens.Num(); }
+	virtual bool IsTweenActive(const FGioTweenHandle& Handle) const override;
+
+	virtual uint32 GetActiveTweenCount() const override { return ActiveTweenSerials.Num(); }
 	
+	virtual void StopTween(FGioTweenHandle& Handle) override;
+
 private:
+	FGioTweenHandle RegisterTweenAndGetHandle(uint32 Index);
+
+	uint32 FindIndexForNewTween();
+
 	void TickActiveTweens(float DeltaTime);
 
-	void RemoveCompletedTweens();
+	void ResetCompleteTweens();
+
+	void StopTween(uint32 Index, uint32 Serial);
 };

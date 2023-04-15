@@ -18,14 +18,20 @@ class GIOTWEENING_API UGioTweeningBlueprintLibrary : public UBlueprintFunctionLi
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
-	static void SetFloatTweenByEvent(float From, float To, FGioTweenSettings Settings,
+	static FGioTweenHandle SetFloatTweenByEvent(float From, float To, FGioTweenSettings Settings,
 		FGioTweeningDynamicDelegate Callback);
 
 	UFUNCTION(BlueprintCallable, Category="Gio Tweening")
-	static void SetVectorTweenByEvent(FVector From, FVector To, FGioTweenSettings Settings,
+	static FGioTweenHandle SetVectorTweenByEvent(FVector From, FVector To, FGioTweenSettings Settings,
 		FGioTweeningVectorDelegate Callback);
 
 	UFUNCTION(BlueprintCallable, Category="Gio Tweening", Meta=(DefaultToSelf="Actor"))
-	static void SetActorLocationTween(AActor* Actor, FVector To, FGioTweenSettings Settings, bool bSweep = false,
-		ETeleportType Teleport = ETeleportType::None);
+	static FGioTweenHandle SetActorLocationTween(AActor* Actor, FVector To, FGioTweenSettings Settings,
+		bool bSweep = false, ETeleportType Teleport = ETeleportType::None);
+
+	UFUNCTION(BlueprintPure, Category="Gio Tweening", Meta=(DefaultToSelf="Context"))
+	static bool IsTweenActive(AActor* Context, const FGioTweenHandle& Handle);
+
+	UFUNCTION(BlueprintCallable, Category="Gio Tweening", Meta=(DefaultToSelf="Context"))
+	static void StopTweenAndClearHandle(AActor* Context, UPARAM(ref) FGioTweenHandle& Handle);
 };

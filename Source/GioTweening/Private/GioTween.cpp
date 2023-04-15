@@ -1,11 +1,12 @@
 ﻿#include "GioTween.h"
 
-FGioTween::FGioTween(float InFrom, float InTo, const FGioTweenSettings& InSettings, FGioTweeningDelegate&& InCallback)
+FGioTween::FGioTween(float InFrom, float InTo, uint32 Serial, const FGioTweenSettings& InSettings, FGioTweeningDelegate&& InCallback)
 	: From(InFrom)
 	  , To(InTo)
-	  , RemainingIterations(InSettings.Iterations)
+	  , Serial(Serial)
 	  , Settings(InSettings)
 	  , Callback(MoveTemp(InCallback))
+      , RemainingIterations(InSettings.Iterations)
 {
 }
 
