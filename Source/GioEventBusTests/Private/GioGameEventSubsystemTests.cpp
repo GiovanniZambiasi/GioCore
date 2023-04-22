@@ -5,10 +5,11 @@
 #include "GioEvent.h"
 #include "GioGameEventsSubsystem.h"
 
-BEGIN_DEFINE_SPEC(FGameEventSubsystemTests, "GioGameEventSubsystemTests", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+BEGIN_DEFINE_SPEC(FGameEventSubsystemTests, "GioGameEventSubsystemTests",
+                  EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
-UWorld* World{nullptr};
-UGioGameEventsSubsystem* GameEventsSubsystem{nullptr};
+	UWorld* World{nullptr};
+	UGioGameEventsSubsystem* GameEventsSubsystem{nullptr};
 
 END_DEFINE_SPEC(FGameEventSubsystemTests)
 
@@ -16,9 +17,15 @@ void FGameEventSubsystemTests::Define()
 {
 	BeforeEach([&]
 	{
-		World = FGioTestUtils::OpenEmptyMap();
-		GameEventsSubsystem = World->GetGameInstance()->GetSubsystem<UGioGameEventsSubsystem>();
-		TestNotNull(TEXT("GameEventSubsystem not null"), GameEventsSubsystem);
+		ADD_LATENT_AUTOMATION_COMMAND(FGioOpenMapCommand{FGioTestUtils::EmptyMapPath})
+		ADD_LATENT_AUTOMATION_COMMAND(FGioLatentAutomationCommandWrapper{FGioAutomationDelegate::CreateLambda([&]
+			{
+			World = FGioTestUtils::TryGetRunningMap(FGioTestUtils::EmptyMapPath);
+			check(World)
+			GameEventsSubsystem = World->GetGameInstance()->GetSubsystem<UGioGameEventsSubsystem>();
+			TestNotNull(TEXT("GameEventSubsystem not null"), GameEventsSubsystem);
+			return true;
+			})});
 	});
 
 	AfterEach([&]
@@ -30,16 +37,21 @@ void FGameEventSubsystemTests::Define()
 
 	It(TEXT("GivenGameEventSubsystem_WhenEventBroadcast_ListenersReceive"), [&]
 	{
-		auto Bus = GameEventsSubsystem->GetEventBus();
-		bool bEventListened = false;
-		
-		Bus->RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](const FGioEvent&)
-		{
-			bEventListened = true;
-		}));
+		ADD_LATENT_AUTOMATION_COMMAND(FGioLatentAutomationCommandWrapper{FGioAutomationDelegate::CreateLambda([&]
+				{
+				auto Bus = GameEventsSubsystem->GetEventBus();
+				bool bEventListened = false;
 
-		Bus->Dispatch(FGioEvent{});
+				Bus->RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](const FGioEvent&)
+					{
+					bEventListened = true;
+					}));
 
-		TestTrue(TEXT("Event listened"), bEventListened);
+				Bus->Dispatch(FGioEvent{});
+
+				TestTrue(TEXT("Event listened"), bEventListened);
+				return true;
+				})
+			});
 	});
 }

@@ -5,6 +5,6 @@
 
 class IGioTweeningService;
 
-DEFINE_LATENT_AUTOMATION_COMMAND_ONE_PARAMETER(FWaitForTweensToFinish, IGioTweeningService*, TweeningService);
+DEFINE_LATENT_AUTOMATION_COMMAND(FWaitForTweensToFinish);
 
-DEFINE_LATENT_AUTOMATION_COMMAND_ONE_PARAMETER(FUnloadMapAndFinishProfiling, UWorld*, Map);
+DEFINE_LATENT_AUTOMATION_COMMAND(FUnloadMapAndFinishProfiling);

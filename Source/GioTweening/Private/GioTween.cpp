@@ -19,10 +19,7 @@ void FGioTween::Tick(float DeltaTime)
 		HandleLoopComplete();
 	}
 
-	float Alpha = Time/Settings.Duration;
-	Alpha = UKismetMathLibrary::Ease(From, To, bForward ? Alpha : 1 - Alpha, Settings.Easing);
-
-	Callback.ExecuteIfBound(Alpha);
+	CalculateAndBroadcastAlpha();
 }
 
 void FGioTween::HandleLoopComplete()
@@ -43,4 +40,12 @@ void FGioTween::HandleLoopComplete()
 			bForward = !bForward;
 		}
 	}
+}
+
+void FGioTween::CalculateAndBroadcastAlpha()
+{
+	float Alpha = Time/Settings.Duration;
+	Alpha = UKismetMathLibrary::Ease(From, To, bForward ? Alpha : 1 - Alpha, Settings.Easing);
+
+	Callback.ExecuteIfBound(Alpha);
 }

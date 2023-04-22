@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GioTweeningService.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "GioTweeningBlueprintLibrary.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FGioTweeningDynamicDelegate, float, Alpha);

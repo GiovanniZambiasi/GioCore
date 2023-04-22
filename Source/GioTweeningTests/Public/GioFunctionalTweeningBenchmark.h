@@ -6,10 +6,10 @@
 #include "FunctionalTest.h"
 #include "GameFramework/Actor.h"
 #include "GioTweeningService.h"
-#include "GioTweeningBenchmark.generated.h"
+#include "GioFunctionalTweeningBenchmark.generated.h"
 
 UCLASS()
-class GIOTWEENINGTESTS_API AGioTweeningBenchmark : public AFunctionalTest
+class GIOTWEENINGTESTS_API AGioFunctionalTweeningBenchmark : public AFunctionalTest
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,7 @@ class GIOTWEENINGTESTS_API AGioTweeningBenchmark : public AFunctionalTest
 	FGioTweenSettings Settings;
 
 public:
-	AGioTweeningBenchmark();
+	AGioFunctionalTweeningBenchmark();
 
 protected:
 	virtual void StartTest() override;

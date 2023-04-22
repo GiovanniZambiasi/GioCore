@@ -10,3 +10,5 @@ public:
 };
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGioTweening, Display, All)
+
+DECLARE_STAT_GROUP(TEXT("Gio Tweening"), STATGROUP_GioTweening, STATCAT_Advanced, true, true, true)

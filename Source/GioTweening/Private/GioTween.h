@@ -36,4 +36,6 @@ public:
 
 private:
 	inline void HandleLoopComplete();
+
+	inline void CalculateAndBroadcastAlpha();
 };

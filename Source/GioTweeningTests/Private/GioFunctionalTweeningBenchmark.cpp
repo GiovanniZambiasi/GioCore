@@ -1,15 +1,15 @@
 ﻿
-#include "GioTweeningBenchmark.h"
+#include "GioFunctionalTweeningBenchmark.h"
 
 #include "GioTweeningService.h"
 
 
-AGioTweeningBenchmark::AGioTweeningBenchmark()
+AGioFunctionalTweeningBenchmark::AGioFunctionalTweeningBenchmark()
 {
 	TimeLimit = 0.f;
 }
 
-void AGioTweeningBenchmark::StartTest()
+void AGioFunctionalTweeningBenchmark::StartTest()
 {
 	Super::StartTest();
 
@@ -23,7 +23,7 @@ void AGioTweeningBenchmark::StartTest()
 	}
 }
 
-void AGioTweeningBenchmark::Tick(float DeltaSeconds)
+void AGioFunctionalTweeningBenchmark::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 

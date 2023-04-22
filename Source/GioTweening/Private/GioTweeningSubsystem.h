@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GioTween.h"
+#include "GioTweening.h"
 #include "GioTweeningService.h"
 #include "GioTweeningSubsystem.generated.h"
 
@@ -19,13 +20,15 @@ class UGioTweeningSubsystem : public UTickableWorldSubsystem, public IGioTweenin
 	TSet<uint32> ActiveTweenSerials{};
 
 	uint32 LastAssignedTweenSerialNumber{0};
+
+	uint32 LowestValidIndex{0};
 	
 public:
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual TStatId GetStatId() const override
 	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(UGioTweeningSubsystem, STATGROUP_Tickables);
+		RETURN_QUICK_DECLARE_CYCLE_STAT(UGioTweeningSubsystem, STATGROUP_GioTweening);
 	}
 
 	virtual FGioTweenHandle SetTween(float From, float To, const FGioTweenSettings& Settings,

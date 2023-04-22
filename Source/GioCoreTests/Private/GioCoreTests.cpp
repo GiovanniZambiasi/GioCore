@@ -2,27 +2,60 @@
 
 #include "GioCoreTests.h"
 
+#include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Tests/AutomationCommon.h"
 
 IMPLEMENT_MODULE(FDefaultModuleImpl, GioCoreTests)
 
-FString const FGioTestUtils::EmptyMapPath = TEXT("/GioCore/EmptyMap.EmptyMap'");
-
-UWorld* FGioTestUtils::OpenMap(const FString& FullPath)
+UWorld* FGioTestUtils::GetFirstRunningMap()
 {
-	checkf(AutomationOpenMap(FullPath), TEXT("Map not found @ path '%s'"), *FullPath);
+	if(!GEngine) return nullptr;
 
-	const auto MapName = FPaths::GetBaseFilename(FullPath);
+	TIndirectArray<FWorldContext> Contexts = GEngine->GetWorldContexts();
 
-	auto WorldContexts = GEngine->GetWorldContexts();
-
-	for (auto WorldContext : GEngine->GetWorldContexts())
+	for (FWorldContext& Context : Contexts)
 	{
-		auto* World = WorldContext.World();
+		if(Context.WorldType != EWorldType::PIE && Context.WorldType != EWorldType::Game || !Context.World())
+			continue;
+		
+		auto World = Context.World();
+		if(!World->AreActorsInitialized())
+		{
+			continue;	
+		}
 
-		if ((WorldContext.WorldType == EWorldType::PIE || WorldContext.WorldType == EWorldType::Game) && World &&
-			World->GetName() == MapName)
+		auto GameState = World->GetGameState();
+		if(GameState && GameState->HasMatchStarted())
+		{
+			return World;
+		}
+	}
+
+	return nullptr;
+}
+
+UWorld* FGioTestUtils::TryGetRunningMap(const FString& MapPath)
+{
+	if(!GEngine) return nullptr;
+
+	FString MapName = FPaths::GetBaseFilename(MapPath);
+
+	TIndirectArray<FWorldContext> Contexts = GEngine->GetWorldContexts();
+
+	for (FWorldContext& Context : Contexts)
+	{
+		if(Context.WorldType != EWorldType::PIE && Context.WorldType != EWorldType::Game || !Context.World())
+			continue;
+
+		UWorld* World = Context.World();
+		if(World->GetName() != MapName || !World->AreActorsInitialized())
+		{
+			continue;	
+		}
+
+		auto GameState = World->GetGameState();
+		if(GameState && GameState->HasMatchStarted())
 		{
 			return World;
 		}
@@ -38,3 +71,20 @@ void FGioTestUtils::CloseMap(UWorld* const World)
 		TargetPC->ConsoleCommand(TEXT("Exit"), true);
 	}
 }
+
+bool FGioLatentAutomationCommandWrapper::Update()
+{
+	return Command.Execute();
+}
+
+bool FGioOpenMapCommand::Update()
+{
+	if(!bIsLoadingMap)
+	{
+		AutomationOpenMap(MapPath);
+		bIsLoadingMap = true;
+	}
+
+	return FGioTestUtils::TryGetRunningMap(MapPath) != nullptr;
+}
+

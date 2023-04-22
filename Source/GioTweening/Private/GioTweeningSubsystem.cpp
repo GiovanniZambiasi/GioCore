@@ -43,39 +43,39 @@ void UGioTweeningSubsystem::StopTweenAndClearHandle(FGioTweenHandle& Handle)
 FGioTweenHandle UGioTweeningSubsystem::RegisterTweenAndGetHandle(uint32 Index)
 {
 	constexpr uint32 MaxIterations = ~0;
-	
-	uint32 Serial;
-	uint32 Iterations{0};
-	
-	do
+
+	for (int32 i = 0; i < MaxIterations; ++i)
 	{
-		Serial = ++LastAssignedTweenSerialNumber;
-		++Iterations;
+		uint32 Serial = ++LastAssignedTweenSerialNumber;
 
-		if(Iterations >= MaxIterations)
+		if(Serial != 0 && !ActiveTweenSerials.Contains(Serial))
 		{
-			checkf(false, TEXT("No valid serial in 32 bit space for GioTween. Did you start tweens in a never-ending loop?"))
-			return FGioTweenHandle{};
+			ActiveTweenSerials.Emplace(Serial);
+			return FGioTweenHandle{Index, Serial};
 		}
-	} while(Serial == 0 && ActiveTweenSerials.Contains(Serial));
-
-	ActiveTweenSerials.Emplace(Serial);
-	return FGioTweenHandle{Index, Serial};
+	}
+	
+	checkf(false, TEXT("No valid serial in 32 bit space for GioTween. Did you start tweens in a never-ending loop?"))
+	return FGioTweenHandle{};
 }
 
 uint32 UGioTweeningSubsystem::FindIndexForNewTween()
 {
-	for (int i = 0; i < TweenPool.Num(); ++i)
+	for (int i = LowestValidIndex; i < TweenPool.Num(); ++i)
 	{
 		if(!TweenPool[i].IsActive())
+		{
 			return i;
+		}
 	}
 
+	++LowestValidIndex;
 	return TweenPool.Emplace();
 }
 
 void UGioTweeningSubsystem::TickActiveTweens(float DeltaTime)
 {
+	DECLARE_SCOPE_CYCLE_COUNTER(TEXT("GioTweningSubsystem TickActiveTweens"), STAT_GioTweeningSubsystemTickActiveTweens, STATGROUP_GioTweening)
 	for (FGioTween& Tween : TweenPool)
 	{
 		if(Tween.IsActive())
@@ -87,6 +87,7 @@ void UGioTweeningSubsystem::TickActiveTweens(float DeltaTime)
 
 void UGioTweeningSubsystem::ResetCompleteTweens()
 {
+	DECLARE_SCOPE_CYCLE_COUNTER(TEXT("GioTweningSubsystem ResetCompleteTweens"), STAT_GioTweeningSubsystemResetCompleteTweens, STATGROUP_GioTweening)
 	for (int i = 0; i < TweenPool.Num(); ++i)
 	{
 		FGioTween& Tween = TweenPool[i];
@@ -104,4 +105,5 @@ void UGioTweeningSubsystem::StopTween(uint32 Index, uint32 Serial)
 	check(TweenPool.IsValidIndex(Index))
 	TweenPool[Index] = FGioTween{};
 	ActiveTweenSerials.Remove(Serial);
+	LowestValidIndex = Index;
 }
