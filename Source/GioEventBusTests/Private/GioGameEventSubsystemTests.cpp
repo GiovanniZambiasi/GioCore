@@ -18,40 +18,43 @@ void FGameEventSubsystemTests::Define()
 	BeforeEach([&]
 	{
 		ADD_LATENT_AUTOMATION_COMMAND(FGioOpenMapCommand{FGioTestUtils::EmptyMapPath})
-		ADD_LATENT_AUTOMATION_COMMAND(FGioLatentAutomationCommandWrapper{FGioAutomationDelegate::CreateLambda([&]
+		ADD_GIO_LATENT_AUTOMATION_COMMAND_LAMBDA_WRAPPER([&]
 			{
 			World = FGioTestUtils::TryGetRunningMap(FGioTestUtils::EmptyMapPath);
 			check(World)
 			GameEventsSubsystem = World->GetGameInstance()->GetSubsystem<UGioGameEventsSubsystem>();
 			TestNotNull(TEXT("GameEventSubsystem not null"), GameEventsSubsystem);
 			return true;
-			})});
+			})
 	});
 
 	AfterEach([&]
 	{
-		FGioTestUtils::CloseMap(World);
-		World = nullptr;
-		GameEventsSubsystem = nullptr;
+		ADD_GIO_LATENT_AUTOMATION_COMMAND_LAMBDA_WRAPPER([&]
+			{
+			FGioTestUtils::CloseMap(World);
+			World = nullptr;
+			GameEventsSubsystem = nullptr;
+			return true;
+			})
 	});
 
 	It(TEXT("GivenGameEventSubsystem_WhenEventBroadcast_ListenersReceive"), [&]
 	{
-		ADD_LATENT_AUTOMATION_COMMAND(FGioLatentAutomationCommandWrapper{FGioAutomationDelegate::CreateLambda([&]
+		ADD_GIO_LATENT_AUTOMATION_COMMAND_LAMBDA_WRAPPER([&]
+			{
+			auto Bus = GameEventsSubsystem->GetEventBus();
+			bool bEventListened = false;
+
+			Bus->RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](const FGioEvent&)
 				{
-				auto Bus = GameEventsSubsystem->GetEventBus();
-				bool bEventListened = false;
+				bEventListened = true;
+				}));
 
-				Bus->RegisterListener<FGioEvent>(TGioEventDelegate<FGioEvent>::CreateLambda([&](const FGioEvent&)
-					{
-					bEventListened = true;
-					}));
+			Bus->Dispatch(FGioEvent{});
 
-				Bus->Dispatch(FGioEvent{});
-
-				TestTrue(TEXT("Event listened"), bEventListened);
-				return true;
-				})
-			});
+			TestTrue(TEXT("Event listened"), bEventListened);
+			return true;
+			})
 	});
 }
