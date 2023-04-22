@@ -22,6 +22,24 @@ private:
 using FGioAutomationDelegate = TDelegate<bool()>;
 
 /**
+ * @brief Opens a map and waits until it has begun play
+ */
+class GIOCORETESTS_API FGioOpenMapCommand : public IAutomationLatentCommand
+{
+public:
+	FGioOpenMapCommand(const FString& InMapPath) : MapPath(InMapPath) { }
+
+	virtual ~FGioOpenMapCommand() = default;
+
+	virtual bool Update() override;
+	
+private:
+	FString MapPath;
+	
+	bool bIsLoadingMap{false};
+};
+
+/**
  * @brief Wrapper for a latent automation command, taking in a lambda function. Useful to keep all the test logic
  * within the scope of "RunTest", so they read almost like a synchronous test.
  */
@@ -40,17 +58,9 @@ private:
 	FGioAutomationDelegate Command;
 };
 
-class GIOCORETESTS_API FGioOpenMapCommand : public IAutomationLatentCommand
-{
-public:
-	FGioOpenMapCommand(const FString& InMapPath) : MapPath(InMapPath) { }
-
-	virtual ~FGioOpenMapCommand() = default;
-
-	virtual bool Update() override;
-	
-private:
-	FString MapPath;
-	
-	bool bIsLoadingMap{false};
-};
+/**
+ * @brief Shorthand for adding a FGioLatentAutomationCommandWrapper with a lambda function.
+ * @param Lambda Standard lambda syntax starting with the captures block "[]" 
+ */
+#define ADD_GIO_LATENT_AUTOMATION_COMMAND_LAMBDA_WRAPPER(Lambda)\
+	ADD_LATENT_AUTOMATION_COMMAND(FGioLatentAutomationCommandWrapper{FGioAutomationDelegate::CreateLambda(Lambda)})
